@@ -1,5 +1,7 @@
 # GRUFFI
 
+**This forked version allows to determine stressed cells in mouse datasets too.**
+
 #### _Published in [Gruffi: an algorithm for computational removal of stressed cells from brain organoid transcriptomic datasets](https://www.embopress.org/doi/full/10.15252/embj.2022111118)_ 
 
 
