@@ -79,7 +79,7 @@ If you want to store multiple UMAP's, you have to keep them in backup slot (in c
 Prepare GO-terms and gene-sets
 
 ```r
-ensembl <- biomaRt::useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl")
+ensembl.human <- biomaRt::useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl")
 
 go1 <- "GO:0006096" # Glycolysis
 go2 <- "GO:0034976" # ER-stress
