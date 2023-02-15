@@ -499,15 +499,7 @@ GetGOTerms <- function(obj = combined.obj,
   print('GetGOTerms()')
 
   if (use.ensemble & is.null(obj@misc$enrichGO[['RNA']])) {
-    if(!exists("ensembl.human")) {
-      print('biomaRt::useEnsembl()')
-      ensembl.human <<- biomaRt::useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl", version = version, GRCh = GRCh)
-    }
-    if(!exists("ensembl.mouse")) {
-      print('biomaRt::useEnsembl()')
-      ensembl.mouse <<- biomaRt::useEnsembl("ensembl", dataset = "mmusculus_gene_ensembl")
-    }
-
+    
     genes <- biomaRt::getBM(attributes = c('mgi_symbol', 'hgnc_symbol'), # 'ensembl_transcript_id', 'go_id'
                             filters = "go_parent_term", uniqueRows = TRUE,
                             values = GO, mart = ensembl)[,1]
