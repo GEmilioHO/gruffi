@@ -658,7 +658,7 @@ AssignGranuleAverageScoresFromGOterm <- function(obj = combined.obj,
   # If new GO term score computation is requested
   if (new_GO_term_computation) {
     obj <- CalculateAndPlotGoTermScores(
-      GO = GO_term, save.UMAP = save.UMAP, obj = obj, overwrite.misc.GO_genes = overwrite.misc.GO_genes,
+      GO = GO_term, save.UMAP = save.UMAP, obj = obj, assay = assay, overwrite.misc.GO_genes = overwrite.misc.GO_genes,
       desc = description, plot.each.gene = plot.each.gene, mirror = mirror, ...
     )
   }
