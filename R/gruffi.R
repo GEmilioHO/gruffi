@@ -527,6 +527,7 @@ GetAllGOTermNames <- function(obj = combined.obj, return.obj = TRUE) {
 
 CalculateAndPlotGoTermScores <- function(
     obj = combined.obj,
+    assay = "RNA",
     GO = "GO:0009651",
     data.base.access = c("biomaRt", "AnnotationDbi")[1],
     mirror = NULL,
@@ -539,9 +540,16 @@ CalculateAndPlotGoTermScores <- function(
     return.plot = FALSE,
     overwrite.misc.GO_genes = FALSE,
     ...) {
+
   # Backup the current default assay to restore it later
   backup.assay <- Seurat::DefaultAssay(obj)
-
+  
+  # Set assay to input assay for GO score computation
+  if (!(assay %in% c("RNA", "SCT"))) {
+    stop("Assay has to be RNA or SCT.")
+  }
+  Seurat::DefaultAssay(obj) <- assay
+  
   # browser()
   # Check if the GO parameter is a valid GO term format
   if (grepl(x = GO, pattern = "^GO:", perl = TRUE)) {
@@ -557,12 +565,6 @@ CalculateAndPlotGoTermScores <- function(
   } else {
     ScoreName <- GO
     message("Assuming you provided direclty a score name in the 'GO' parameter: ", ScoreName)
-  }
-
-  # Set assay to RNA for GO score computation if not already set
-  if (Seurat::DefaultAssay(obj) != "RNA") {
-    message("For GO score computation assay is set to RNA. It will be reset to Seurat::DefaultAssay() afterwards.")
-    Seurat::DefaultAssay(obj) <- "RNA"
   }
 
   # Check if the gene score is already present in the metadata
