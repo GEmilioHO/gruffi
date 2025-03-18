@@ -580,12 +580,12 @@ CalculateAndPlotGoTermScores <- function(
 
     # Retrieve and add GO terms and scores to the object
     obj <- GetGOTerms(
-      obj = obj, GO = GO, web.open = open.browser, data.base.access = data.base.access,
+      obj = obj, GO = GO, assay = assay, web.open = open.browser, data.base.access = data.base.access,
       mirror = mirror, overwrite.misc.GO_genes = overwrite.misc.GO_genes
     )
     GO.genes <- obj@misc$gruffi$GO[[GO.wDot]]
     if (verbose) print(head(GO.genes))
-    obj <- AddGOScore(obj = obj, GO = GO)
+    obj <- AddGOScore(obj = obj, GO = GO, assay = assay)
   }
 
   # Plot GO term score
@@ -740,14 +740,14 @@ AddGOGeneList.manual <- function(obj = combined.obj, GO = "GO:0034976", web.open
 #' @export
 #' @importFrom Seurat AddModuleScore
 
-AddGOScore <- function(obj = combined.obj, GO = "GO:0034976", FixName = TRUE) {
+AddGOScore <- function(obj = combined.obj, assay = "RNA", GO = "GO:0034976", FixName = TRUE) {
   message("Running AddGOScore()")
   GO.wDot <- make.names(GO)
   (genes.GO <- list(obj@misc$gruffi$GO[[GO.wDot]]))
   # print(genes.GO)
   ScoreName <- paste0("Score.", make.names(GO))
   if (!is.list(genes.GO)) genes.GO <- list(genes.GO) # idk why this structure is not consistent...
-  obj <- Seurat::AddModuleScore(object = obj, features = genes.GO, name = ScoreName)
+  obj <- Seurat::AddModuleScore(object = obj, assay = assay, features = genes.GO, name = ScoreName)
 
   if (FixName) obj <- .fix.metad.colname.rm.trailing.1(obj = obj, colname = ScoreName)
   return(obj)
