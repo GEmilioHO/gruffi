@@ -2020,7 +2020,7 @@ CleanDuplicateScorenames <- function(obj = obj) {
 #' @export
 #' @importFrom Stringendo iprint
 
-IntersectWithExpressed <- function(seurat_obj, genes, assay = "RNA", slot = "data") {
+IntersectWithExpressed <- function(seurat_obj, genes, assay = "RNA", slot = "data", genes.shown = 10) {
   # Extract expression matrix from Seurat object
   expression_matrix <- SeuratObject::GetAssayData(seurat_obj, assay = assay, slot = slot)
   
