@@ -60,7 +60,7 @@ devtools::install_github(repo = "vertesy/Seurat.utils", upgrade = F)
 
 
 # Install gruffi
-devtools::install_github(repo = "jn-goe/gruffi", upgrade = F)
+devtools::install_github(repo = "GEmilioHO/gruffi", upgrade = F)
 
 ```
 
