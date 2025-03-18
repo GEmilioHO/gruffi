@@ -430,7 +430,7 @@ GetGOTerms <- function(obj = combined.obj,
   message("\n", length(genes), " gene symbols used: ", Stringendo::kppws(head(genes, n = genes.shown)))
 
   # Intersect the downloaded genes with those expressed in the Seurat object
-  genes <- IntersectWithExpressed(obj = obj, genes = genes)
+  genes <- IntersectWithExpressed(seurat_obj = obj, genes = genes, assay = assay, slot = "counts")
 
   # Save the result in the Seurat object for later access
   if (is.null(obj@misc$gruffi$"GO")) obj@misc$gruffi$GO <- list()
@@ -715,9 +715,9 @@ AssignGranuleAverageScoresFromGOterm <- function(obj = combined.obj,
 #' @importFrom Stringendo iprint
 
 AddGOGeneList.manual <- function(obj = combined.obj, GO = "GO:0034976", web.open = FALSE # Add GO terms via Biomart package.
-                                 , genes = c("A0A140VKG3", "ARX", "CNTN2", "DRD1", "DRD2", "FEZF2", "LHX6")) {
+                                 , genes = c("A0A140VKG3", "ARX", "CNTN2", "DRD1", "DRD2", "FEZF2", "LHX6"), assay = "RNA") {
   print(head(genes, n = 15))
-  genes <- IntersectWithExpressed(obj = obj, genes = genes)
+  genes <- IntersectWithExpressed(seurat_obj = obj, genes = genes, assay = assay, slot = "counts")
 
   if (is.null(obj@misc$gruffi$GO)) obj@misc$gruffi$GO <- list()
   obj@misc$gruffi$GO[[make.names(GO)]] <- genes
@@ -2020,18 +2020,25 @@ CleanDuplicateScorenames <- function(obj = obj) {
 #' @export
 #' @importFrom Stringendo iprint
 
-IntersectWithExpressed <- function(genes, obj = combined.obj, genes.shown = 10) {
-  message("Running IntersectWithExpressed()")
-  diff <- setdiff(genes, rownames(obj))
+IntersectWithExpressed <- function(seurat_obj, genes, assay = "RNA", slot = "data") {
+  # Extract expression matrix from Seurat object
+  expression_matrix <- SeuratObject::GetAssayData(seurat_obj, assay = assay, slot = slot)
+  
+  # Check if input genes exist in the matrix
+  valid_genes <- intersect(genes, rownames(expression_matrix))
+  
+  # Identify genes without NA values
+  genes_without_na <- valid_genes[apply(expression_matrix[valid_genes, , drop = FALSE], 1, function(x) all(!is.na(x)))]
+
+  diff <- setdiff(genes, genes_without_na)
   Stringendo::iprint(
     length(diff), "genes (of", length(genes),
-    ") are MISSING from the Seurat object:",
+    ") are MISSING or have NA values from the Seurat object:",
     head(diff, genes.shown)
   )
-  return(intersect(rownames(obj), genes))
+  
+  return(genes_without_na)
 }
-
-
 
 # _________________________________________________________________________________________________
 #' @title Remove gruffi results from the Seurat object
